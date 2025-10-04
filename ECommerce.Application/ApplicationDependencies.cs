@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
-using ECommerce.Application.Features.AuthenticationFeatures.LoginUser.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.LoginUser.Command.Validator;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterBuyer.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterBuyer.Command.Validation;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Validator;
+using ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.LoginUser.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.LoginUser.Command.Validator;
+using ECommerce.Application.Features.AuthenticationFeatures.Password.RestPassword.Command;
+using ECommerce.Application.Features.AuthenticationFeatures.Password.RestPassword.Validator;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterBuyer.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterBuyer.Command.Validation;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterSeller.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterSeller.Command.Validator;
 using ECommerce.Application.PipelineBehaviors;
 using FluentValidation;
 using MediatR;
@@ -37,6 +39,7 @@ namespace ECommerce.Application
             services.AddScoped<IValidator<AddBuyerUserCommand>, AddBuyerUserValidator>();
             services.AddScoped<IValidator<AddSellerUserCommand>, AddSellerUserValidator>();
             services.AddScoped<IValidator<UserLogInCommand>, UserLogInValidator>();
+            services.AddScoped<IValidator<ResetPasswordCommand>, ResetPasswordCommandValidator>();
 
             //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

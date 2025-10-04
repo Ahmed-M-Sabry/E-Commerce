@@ -265,9 +265,23 @@ public class IdentityServies : IIdentityServies
             var tokenBytes = Encoding.UTF8.GetBytes(token);
             return WebEncoders.Base64UrlEncode(tokenBytes);
         }
-        public async Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user , string decodedToken, CancellationToken cancellationToken = default)
+        public async Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user, string decodedToken, CancellationToken cancellationToken = default)
         {
             return await _userManager.ConfirmEmailAsync(user, decodedToken);
         }
+
+        public async Task<string> GetRestPasswordTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var tokenBytes = Encoding.UTF8.GetBytes(token);
+            return WebEncoders.Base64UrlEncode(tokenBytes);
+        }
+        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+        
     }
 }

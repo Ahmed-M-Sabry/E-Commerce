@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterBuyer.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterBuyer.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterSeller.Command.Model;
 using ECommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;

@@ -9,5 +9,6 @@ namespace ECommerce.Application.IServices
     public interface IEmailService
     {
         Task SendEmailAsync(string mailTo , string subject , string body );
+        Task SendResetPasswordEmailAsync(string mailTo, string subject, string body);
     }
 }

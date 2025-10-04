@@ -1,10 +1,11 @@
 ﻿using ECommerce.API.ApplicationBase;
-using ECommerce.Application.Features.AuthenticationFeatures.ConfirmEmail.Command;
-using ECommerce.Application.Features.AuthenticationFeatures.LoginUser.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.Logout.Command;
-using ECommerce.Application.Features.AuthenticationFeatures.RefreshToken.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterBuyer.Command.Model;
-using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.LoginUser.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.Logout.Command;
+using ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.RefreshToken.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Password.RestPassword.Command;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.ConfirmEmail.Command;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterBuyer.Command.Model;
+using ECommerce.Application.Features.AuthenticationFeatures.Registeration.RegisterSeller.Command.Model;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using MediatR;
@@ -82,6 +83,20 @@ namespace ECommerce.API.Controllers
             return result.ResultStatusCode();
         }
 
+        [HttpPost("Rest-Password")]
+        public async Task<IActionResult> RestPassword([FromForm] ResetPasswordCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ResultStatusCode();
+        }
+
+        [HttpPost("Forget-Password")]
+        public async Task<IActionResult> ForgetPassword([FromForm] SendTokenToRestPasswordCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ResultStatusCode();
+        }
+
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -89,6 +104,7 @@ namespace ECommerce.API.Controllers
             
             return result.ResultStatusCode();
         }
+
 
         // To Do
         // 2- Add EndPoint to Get Token To Rest Password

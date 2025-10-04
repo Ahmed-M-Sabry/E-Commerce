@@ -27,5 +27,8 @@ namespace ECommerce.Application.IServices
 
         Task<string> GetEmailConfirmationTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default);
         Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user, string decodedToken, CancellationToken cancellationToken = default);
+        Task<string> GetRestPasswordTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default);
+        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
+
     }
 }
