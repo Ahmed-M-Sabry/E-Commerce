@@ -6,6 +6,7 @@ using ECommerce.Application.Features.AuthenticationFeatures.RegisterBuyer.Comman
 using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Dos;
 using ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.Command.Model;
 using ECommerce.Application.IServices;
+using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -22,15 +23,19 @@ namespace ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.C
         private readonly IIdentityServies _identityServies;
         private readonly IValidator<AddSellerUserCommand> _validator;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
+
 
         public AddSellerUserHandler(
             IValidator<AddSellerUserCommand> validator,
             IMapper mapper,
-            IIdentityServies identityServies)
+            IIdentityServies identityServies,
+            IEmailService emailService)
         {
             _validator = validator;
             _mapper = mapper;
             _identityServies = identityServies;
+            _emailService = emailService;
         }
         public async Task<Result<RegisterSellerDto>> Handle(AddSellerUserCommand request, CancellationToken cancellationToken)
         {
@@ -77,6 +82,13 @@ namespace ECommerce.Application.Features.AuthenticationFeatures.RegisterSeller.C
                 Token = token,
                 Role = ApplicationRoles.Seller
             };
+
+            // Send Confimation Token
+            var confirmToken = await _identityServies.GetEmailConfirmationTokenAsync(newUser);
+
+            var confirmationLink = $"{CommonLinks.SendEmailTo}/confirm-email?userId={newUser.Id}&token={confirmToken}";
+
+            await _emailService.SendEmailAsync(newUser.Email, "Confirm your email",confirmationLink);
 
             return Result<RegisterSellerDto>.Success(response);
         }

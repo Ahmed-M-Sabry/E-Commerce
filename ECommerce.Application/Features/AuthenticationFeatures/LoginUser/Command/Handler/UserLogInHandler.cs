@@ -44,6 +44,11 @@ namespace ECommerce.Application.Features.AuthenticationFeatures.LoginUser.Comman
             if (user is null)
                 return Result<ResponseAuthModel>.Failure("Invalid credentials", ErrorType.Unauthorized);
 
+            if (!user.EmailConfirmed)
+            {
+                return Result<ResponseAuthModel>.Failure("Please confirm your email before logging in.", ErrorType.Unauthorized);
+            }
+
             // If Password incorrect
             var isPasswordValid = await _identityServies.IsPasswordExist(user, request.Password, cancellationToken);
 

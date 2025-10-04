@@ -31,7 +31,7 @@ namespace ECommerce.Infrastructure
                     option.Password.RequireLowercase = false;
                     option.Password.RequireUppercase = false;
                     option.Password.RequireNonAlphanumeric = false;
-                    option.SignIn.RequireConfirmedAccount = false; // Disable email confirmation for simplicity
+                    option.SignIn.RequireConfirmedAccount = true; // Disable email confirmation for simplicity
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -59,6 +59,7 @@ namespace ECommerce.Infrastructure
             });
 
 
+            services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
 
             return services;
         }

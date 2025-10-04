@@ -22,14 +22,10 @@ namespace ECommerce.Domain.Entities
 
         // Seller Only
 
-        [MaxLength(200)]
         public string? Address { get; set; }
 
-        [Required]
-        [MaxLength(150)]
         public string? StoreName { get; set; }
 
-        [MaxLength(200)]
         public string? StoreAddress { get; set; }
 
     }

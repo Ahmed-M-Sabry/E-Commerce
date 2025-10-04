@@ -29,7 +29,7 @@ namespace ECommerce.Infrastructure.Migrations
             );
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount", "FullName" , "CreatedAt" },
+                columns: new[] { "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount", "FullName", "CreatedAt" },
                 values: new object[] {
                     "admin-user-id",
                     "admin@eshop.com",
@@ -86,4 +86,5 @@ namespace ECommerce.Infrastructure.Migrations
         }
 
     }
+
 }

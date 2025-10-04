@@ -16,6 +16,7 @@ namespace ECommerce.Application.IServices
         Task<bool> RevokeRefreshTokenFromCookiesAsync();
         Task<bool> IsInRole(string userId, string role);
         Task<ApplicationUser> IsUserExist(string userId);
+        Task<ApplicationUser> GetUserByEmail(string email);
 
         Task<ApplicationUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
         Task<bool> IsEmailExist(string email, CancellationToken cancellationToken = default);
@@ -23,5 +24,8 @@ namespace ECommerce.Application.IServices
         Task<IdentityResult> CreateSellerUserAsync(ApplicationUser user, string password, CancellationToken cancellationToken = default);
         Task<IdentityResult> CreateBuyerUserAsync(ApplicationUser user, string password, CancellationToken cancellationToken = default);
         Task<string> CreateJwtToken(ApplicationUser user, CancellationToken cancellationToken = default);
+
+        Task<string> GetEmailConfirmationTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default);
+        Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user, string decodedToken, CancellationToken cancellationToken = default);
     }
 }

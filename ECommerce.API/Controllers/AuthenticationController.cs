@@ -1,4 +1,5 @@
 ﻿using ECommerce.API.ApplicationBase;
+using ECommerce.Application.Features.AuthenticationFeatures.ConfirmEmail.Command;
 using ECommerce.Application.Features.AuthenticationFeatures.LoginUser.Command.Model;
 using ECommerce.Application.Features.AuthenticationFeatures.Logout.Command;
 using ECommerce.Application.Features.AuthenticationFeatures.RefreshToken.Model;
@@ -48,6 +49,26 @@ namespace ECommerce.API.Controllers
             return result.ResultStatusCode();
         }
 
+        //[HttpPost("Confirm-Email")]
+        [HttpGet("Confirm-Email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ResultStatusCode();
+        }
+
+        [HttpPost("Resend-Confirm-Email")]
+        public async Task<IActionResult> ResendConfirmEmail([FromQuery] ResendConfirmEmailCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ResultStatusCode();
+        }
+        //[HttpGet("Resend-Confirm-Email")]
+        //public async Task<IActionResult> ResendConfirmEmail([FromQuery] ConfirmEmailCommand command)
+        //{
+        //    var result = await Mediator.Send(command);
+        //    return result.ResultStatusCode();
+        //}
         [HttpPost("Generate-New-token-From-RefreshToken")]
         public async Task<IActionResult> RefreshToken()
         {

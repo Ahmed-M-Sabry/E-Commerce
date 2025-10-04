@@ -5,12 +5,14 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.IRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -222,6 +224,14 @@ public class IdentityServies : IIdentityServies
                 return null;
             return user;
         }
+        public async Task<ApplicationUser> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return null;
+            return user;
+        }
+
 
         public async Task<IdentityResult> CreateSellerUserAsync(ApplicationUser user, string password, CancellationToken cancellationToken = default)
         {
@@ -247,6 +257,17 @@ public class IdentityServies : IIdentityServies
             return result;
         }
 
-
+        public async Task<string> GetEmailConfirmationTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+            //var token =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            //return  WebUtility.UrlEncode(token);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var tokenBytes = Encoding.UTF8.GetBytes(token);
+            return WebEncoders.Base64UrlEncode(tokenBytes);
+        }
+        public async Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user , string decodedToken, CancellationToken cancellationToken = default)
+        {
+            return await _userManager.ConfirmEmailAsync(user, decodedToken);
+        }
     }
 }

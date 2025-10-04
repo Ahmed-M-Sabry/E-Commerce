@@ -21,6 +21,7 @@ namespace ECommerce.Infrastructure
             services.AddTransient<IIdentityServies, IdentityServies>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserContextService, UserContextService>();
+            services.AddTransient<IEmailService, EmailService>();
 
 
 
