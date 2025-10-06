@@ -14,70 +14,63 @@ namespace ECommerce.Infrastructure.Repositories
     public class GenericRepositoryAsync<T> : IGenericRepositoryAsync<T> where T : class
     {
         protected readonly ApplicationDbContext _dbContext;
+        protected readonly DbSet<T> _dbSet;
+
         public GenericRepositoryAsync(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+            _dbSet = _dbContext.Set<T>();
         }
-
-
 
         public virtual async Task<T> GetByIdAsync(int id)
         {
-
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public virtual async Task<T> AddAsync(T entity)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
+            await _dbSet.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-
             return entity;
         }
 
         public virtual async Task UpdateAsync(T entity)
         {
-            _dbContext.Set<T>().Update(entity);
+            _dbSet.Update(entity);
             await _dbContext.SaveChangesAsync();
-
         }
 
         public virtual async Task DeleteAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            _dbSet.Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
+        public async Task<IEnumerable<T>> GetAllAsync() 
+        { 
             return _dbContext.Set<T>().AsNoTracking().AsQueryable().ToList();
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] Includes)
+        public virtual async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
-            var data = _dbContext.Set<T>().AsQueryable();
-            foreach (var item in Includes)
-            {
-               data = data.Include(item);
-            }
-            return await data.ToListAsync();
+            IQueryable<T> query = _dbSet.AsNoTracking();
+            foreach (var include in includes)
+                query = query.Include(include);
 
+            return await query.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] Includes)
+        public virtual async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
         {
-            var data = _dbContext.Set<T>().AsQueryable();
-            foreach (var item in Includes)
-            {
-                data = data.Include(item);
-            }
-            return await data.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
+            IQueryable<T> query = _dbSet.AsQueryable();
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
         }
 
-        public async Task<int> CountAsync()
+        public virtual async Task<int> CountAsync()
         {
-            return await _dbContext.Set<T>().CountAsync();
-
+            return await _dbSet.CountAsync();
         }
     }
 }

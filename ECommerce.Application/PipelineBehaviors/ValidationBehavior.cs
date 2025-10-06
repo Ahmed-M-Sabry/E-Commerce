@@ -18,6 +18,7 @@ namespace ECommerce.Application.PipelineBehaviors
         {
             _validator = validator;
         }
+
         public async Task<TResponse> Handle(
             TRequest request,
             RequestHandlerDelegate<TResponse> next,
@@ -25,20 +26,19 @@ namespace ECommerce.Application.PipelineBehaviors
         {
             if (_validator != null)
             {
-                var result = await _validator.ValidateAsync(request, cancellationToken);
+                var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-                if (!result.IsValid)
+                if (!validationResult.IsValid)
                 {
-                    var errors = string.Join(" | ", result.Errors.Select(e => e.ErrorMessage));
+                    var errors = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage));
 
                     var responseType = typeof(TResponse);
-                    var resultGenericType = responseType.GenericTypeArguments.FirstOrDefault();
-
-                    if (resultGenericType != null)
+                    if (responseType.IsGenericType &&
+                        responseType.GetGenericTypeDefinition() == typeof(Result<>))
                     {
-                        // Create a Result<T> instance dynamically
+                        var innerType = responseType.GetGenericArguments()[0];
                         var failureMethod = typeof(Result<>)
-                            .MakeGenericType(resultGenericType)
+                            .MakeGenericType(innerType)
                             .GetMethod("Failure", new[] { typeof(string), typeof(ErrorType) });
 
                         if (failureMethod != null)
@@ -48,29 +48,11 @@ namespace ECommerce.Application.PipelineBehaviors
                         }
                     }
 
-                    // fallback
-                    throw new Exception("Validation failed but could not construct Result<T>.");
+                    throw new InvalidOperationException($"Validation failed for {typeof(TRequest).Name} but could not construct a valid Result<T> response.");
                 }
             }
 
             return await next();
         }
-
-        //public async Task<TResponse> Handle(TRequest request,RequestHandlerDelegate<TResponse> next,CancellationToken cancellationToken)
-        //{
-        //    if (_validator != null)
-        //    {
-        //        var result = await _validator.ValidateAsync(request, cancellationToken);
-
-        //        if (!result.IsValid)
-        //        {
-        //            var errors = string.Join(" | ", result.Errors.Select(e => e.ErrorMessage));
-        //            return Result<TResponse>.Failure(errors, ErrorType.BadRequest) as TResponse;
-        //        }
-        //    }
-
-        //    return await next();
-        //}
-
     }
 }

@@ -1,11 +1,14 @@
 ﻿using ECommerce.Application.Comman;
 using ECommerce.Application.Common;
 using ECommerce.Application.Features;
+using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryByName;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,55 +29,49 @@ namespace ECommerce.Application.PipelineBehaviors
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            // List of commands that require Admin role
-            var userRequiredCommands = new[]
+            var sellerRequiredCommands = new[]
             {
-                // Create
-                                typeof(ses)
-
-
-                // Edit
-                
-
-                // Delete
-                
-
-                // Restore
-                
-                
-                // Get All
-
-
-                
-
+                typeof(ses),
             };
 
-            // Check if the request is one of the admin-required commands
-            if (userRequiredCommands.Contains(request.GetType()))
+            if (sellerRequiredCommands.Contains(request.GetType()))
             {
-                // If there's an HTTP context (i.e., request comes from Controller)
-                if (_httpContextAccessor.HttpContext != null)
-                {
-                    var userId = _httpContextAccessor.HttpContext?.User?.FindFirst("uid")?.Value;
-                    if (string.IsNullOrEmpty(userId))
-                        return Result<TResponse>.Failure("User ID not found in token.", ErrorType.Unauthorized) as TResponse;
+                if (_httpContextAccessor.HttpContext == null)
+                    return CreateUnauthorizedResult<TResponse>("No user context available.");
 
-                    var user = await _userManager.FindByIdAsync(userId);
-                    if (user == null)
-                        return Result<TResponse>.Failure("User not found.", ErrorType.Unauthorized) as TResponse;
+                var userId = _httpContextAccessor.HttpContext.User?.FindFirst("uid")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return CreateUnauthorizedResult<TResponse>("You Must Be Seller To See It");
 
-                    if (!await _userManager.IsInRoleAsync(user, ApplicationRoles.Seller))
-                        return Result<TResponse>.Failure("You must be an user to perform this action.", ErrorType.Unauthorized) as TResponse;
-                }
-                else
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return CreateUnauthorizedResult<TResponse>("User not found.");
+
+                if (!await _userManager.IsInRoleAsync(user, ApplicationRoles.Seller))
+                    return CreateUnauthorizedResult<TResponse>("You must be a Seller to perform this action.");
+            }
+
+            return await next();
+        }
+
+        private static TResponse CreateUnauthorizedResult<TResponse>(string message)
+        {
+            var responseType = typeof(TResponse);
+            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+            {
+                var innerType = responseType.GetGenericArguments()[0];
+                var failureMethod = typeof(Result<>)
+                    .MakeGenericType(innerType)
+                    .GetMethod("Failure", new[] { typeof(string), typeof(ErrorType) });
+
+                if (failureMethod != null)
                 {
-                    // If no HTTP context (e.g., called from internal service), fail by default
-                    return Result<TResponse>.Failure("No user context available.", ErrorType.Unauthorized) as TResponse;
+                    var failure = failureMethod.Invoke(null, new object[] { message, ErrorType.Unauthorized });
+                    return (TResponse)failure!;
                 }
             }
 
-            // Proceed to the next handler
-            return await next();
+            throw new InvalidOperationException($"Unauthorized access for {typeof(TRequest).Name}, but could not construct Result<T> response.");
         }
     }
 }

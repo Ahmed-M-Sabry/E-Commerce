@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.IServices;
+using ECommerce.Application.IServices.ProductServ;
 using ECommerce.Domain.IRepositories;
 using ECommerce.Domain.IRepositories.IOrderRepo;
 using ECommerce.Domain.IRepositories.ProductsRepo;
@@ -7,6 +8,7 @@ using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Repositories.OrderRepo;
 using ECommerce.Infrastructure.Repositories.ProductsRepo;
 using ECommerce.Infrastructure.Services;
+using ECommerce.Infrastructure.Services.ProductServ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +28,7 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IEmailService, EmailService>();
-
+            services.AddScoped<ICategoryService, CategoryService>();
 
             // Repo
             services.AddScoped<ICategoryRepository, CategoryRepository>();

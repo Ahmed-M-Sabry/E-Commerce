@@ -36,6 +36,11 @@ namespace ECommerce.Application
                 cfg.AddMaps(Assembly.GetExecutingAssembly());
             });
 
+            var assembly = Assembly.GetExecutingAssembly();
+
+            services.AddValidatorsFromAssembly(assembly);
+
+
             services.AddScoped<IValidator<AddBuyerUserCommand>, AddBuyerUserValidator>();
             services.AddScoped<IValidator<AddSellerUserCommand>, AddSellerUserValidator>();
             services.AddScoped<IValidator<UserLogInCommand>, UserLogInValidator>();
