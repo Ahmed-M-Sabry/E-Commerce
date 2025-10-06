@@ -1,4 +1,6 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.Entities.Order;
+using ECommerce.Domain.Entities.Products;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,7 +21,14 @@ namespace ECommerce.Infrastructure.Data
         {
             base.OnModelCreating(builder);
         }
-        
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Rating> Ratings { get; set; }
+        public virtual DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
     }
 }

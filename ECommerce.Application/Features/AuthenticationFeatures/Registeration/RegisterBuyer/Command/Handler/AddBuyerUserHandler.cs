@@ -36,7 +36,7 @@ namespace ECommerce.Application.Features.AuthenticationFeatures.Registeration.Re
         {
             // Validation
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
+                if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 return Result<RegisterUserDto>.Failure(string.Join(" | ", errors), ErrorType.BadRequest);

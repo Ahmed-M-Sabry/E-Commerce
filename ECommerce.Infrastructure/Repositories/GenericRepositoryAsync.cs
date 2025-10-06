@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,45 +13,20 @@ namespace ECommerce.Infrastructure.Repositories
 {
     public class GenericRepositoryAsync<T> : IGenericRepositoryAsync<T> where T : class
     {
-        #region Vars / Props
-
         protected readonly ApplicationDbContext _dbContext;
-
-        #endregion
-
-        #region Constructor(s)
         public GenericRepositoryAsync(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        #endregion
 
 
-        #region Methods
-
-        #endregion
-
-        #region Actions
         public virtual async Task<T> GetByIdAsync(int id)
         {
 
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-
-        public IQueryable<T> GetTableNoTracking()
-        {
-            return _dbContext.Set<T>().AsNoTracking().AsQueryable();
-        }
-
-
-        public virtual async Task AddRangeAsync(ICollection<T> entities)
-        {
-            await _dbContext.Set<T>().AddRangeAsync(entities);
-            await _dbContext.SaveChangesAsync();
-
-        }
         public virtual async Task<T> AddAsync(T entity)
         {
             await _dbContext.Set<T>().AddAsync(entity);
@@ -71,57 +47,37 @@ namespace ECommerce.Infrastructure.Repositories
             _dbContext.Set<T>().Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
-        public virtual async Task DeleteRangeAsync(ICollection<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                _dbContext.Entry(entity).State = EntityState.Deleted;
-            }
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-
-
-        public IDbContextTransaction BeginTransaction()
-        {
-
-
-            return _dbContext.Database.BeginTransaction();
-        }
-
-        public void Commit()
-        {
-            _dbContext.Database.CommitTransaction();
-
-        }
-
-        public void RollBack()
-        {
-            _dbContext.Database.RollbackTransaction();
-
-        }
-
-        public IQueryable<T> GetTableAsTracking()
-        {
-            return _dbContext.Set<T>().AsQueryable();
-
-        }
-
-        public virtual async Task UpdateRangeAsync(ICollection<T> entities)
-        {
-            _dbContext.Set<T>().UpdateRange(entities);
-            await _dbContext.SaveChangesAsync();
-        }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return _dbContext.Set<T>().AsNoTracking().AsQueryable().ToList();
         }
-        #endregion
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] Includes)
+        {
+            var data = _dbContext.Set<T>().AsQueryable();
+            foreach (var item in Includes)
+            {
+               data = data.Include(item);
+            }
+            return await data.ToListAsync();
+
+        }
+
+        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] Includes)
+        {
+            var data = _dbContext.Set<T>().AsQueryable();
+            foreach (var item in Includes)
+            {
+                data = data.Include(item);
+            }
+            return await data.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _dbContext.Set<T>().CountAsync();
+
+        }
     }
 }

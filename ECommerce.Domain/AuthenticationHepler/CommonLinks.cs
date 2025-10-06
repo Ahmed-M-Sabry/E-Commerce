@@ -8,6 +8,6 @@ namespace ECommerce.Domain.AuthenticationHepler
 {
     public class CommonLinks
     {
-        public const string SendEmailTo = "https://localhost:7131/api/Authentication";
+        public const string SendEmailTo = "http://localhost:4200";
     }
 }

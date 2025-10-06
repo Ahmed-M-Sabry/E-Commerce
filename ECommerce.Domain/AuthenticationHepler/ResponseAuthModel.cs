@@ -10,6 +10,7 @@ namespace ECommerce.Domain.AuthenticationHepler
 {
     public class ResponseAuthModel
     {
+        public string fullname { get; set; }
         public string Message { get; set; }
         public string Token { get; set; }
         public List<string> Roles { get; set; }

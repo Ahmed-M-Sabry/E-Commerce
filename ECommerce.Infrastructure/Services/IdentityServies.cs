@@ -186,6 +186,7 @@ public class IdentityServies : IIdentityServies
 
             return new ResponseAuthModel
             {
+                fullname =user.FullName,
                 Message = "Login successful.",
                 Token = jwtToken,
                 Roles = roles.ToList(),

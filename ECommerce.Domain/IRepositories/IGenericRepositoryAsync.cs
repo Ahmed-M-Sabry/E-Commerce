@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,19 +10,15 @@ namespace ECommerce.Domain.IRepositories
 {
     public interface IGenericRepositoryAsync<T> where T : class
     {
-        Task DeleteRangeAsync(ICollection<T> entities);
-        Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task SaveChangesAsync();
-        IDbContextTransaction BeginTransaction();
-        void Commit();
-        void RollBack();
-        IQueryable<T> GetTableNoTracking();
-        IQueryable<T> GetTableAsTracking();
+        Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] Includes);
+        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
+
         Task<T> AddAsync(T entity);
-        Task AddRangeAsync(ICollection<T> entities);
         Task UpdateAsync(T entity);
-        Task UpdateRangeAsync(ICollection<T> entities);
         Task DeleteAsync(T entity);
+        Task<int> CountAsync();
+
     }
 }

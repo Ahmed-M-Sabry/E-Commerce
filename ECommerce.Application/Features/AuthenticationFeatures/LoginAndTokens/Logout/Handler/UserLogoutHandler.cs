@@ -19,11 +19,11 @@ namespace ECommerce.Application.Features.AuthenticationFeatures.LoginAndTokens.L
         }
         public async Task<Result<bool>> Handle(UserLogoutCommand request, CancellationToken cancellationToken)
         {
-            var result = await _identityServies.RevokeRefreshTokenFromCookiesAsync();
-            if(!result)
-                return Result<bool>.Failure("Logout failed", ErrorType.InternalServerError);
+            //var result = await _identityServies.RevokeRefreshTokenFromCookiesAsync();
+            //if(!result)
+            //    return Result<bool>.Failure("Logout failed", ErrorType.InternalServerError);
 
-            return Result<bool>.Success(true, "Logour Success");
+            return Result<bool>.Success(true, "Logout Success");
         }
     }
 }
