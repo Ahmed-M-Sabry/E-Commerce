@@ -1,4 +1,5 @@
-﻿using ECommerce.Application;
+﻿using ECommerce.API.Middleware;
+using ECommerce.Application;
 using ECommerce.Domain;
 using ECommerce.Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMemoryCache();
 
 // Add CORS policy to allow requests from any origin
 builder.Services.AddCors(options =>
@@ -63,20 +66,20 @@ var app = builder.Build();
 
 app.UseCors("AllowFrontend");
 
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:4200");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        context.Response.StatusCode = 200;
-        await context.Response.CompleteAsync();
-        return;
-    }
+//app.Use(async (context, next) =>
+//{
+//    if (context.Request.Method == "OPTIONS")
+//    {
+//        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:4200");
+//        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//        context.Response.StatusCode = 200;
+//        await context.Response.CompleteAsync();
+//        return;
+//    }
 
-    await next();
-});
+//    await next();
+//});
 
 if (app.Environment.IsDevelopment())
 {
@@ -87,6 +90,8 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
+//app.UseStatusCodePagesWithReExecute("/errors/{0}");
+app.UseMiddleware<ExceptionsMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
