@@ -51,12 +51,16 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             return Result<Product>.Success(added);
         }
 
-        // ✅ Edit Product (بدون تعديل الصور)
-        public async Task<Result<Product>> EditProductAsync(Product updatedProduct)
+        public async Task<Result<Product>> EditProductAsync(int Id , Product updatedProduct)
         {
-            var existing = await _productRepository.GetByIdAsync(updatedProduct.Id, p => p.Photos);
+            var existing = await _productRepository.GetByIdAsync(Id);
             if (existing == null)
                 return Result<Product>.Failure("Product not found.", ErrorType.NotFound);
+
+            var categoryExists = await _categoryRepository.GetByIdAsync(updatedProduct.CategoryId);
+            if (categoryExists == null)
+                return Result<Product>.Failure("Category not found.", ErrorType.NotFound);
+
 
             existing.Name = updatedProduct.Name;
             existing.Description = updatedProduct.Description;
@@ -68,14 +72,12 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             return Result<Product>.Success(existing);
         }
 
-        // ✅ Delete Product + Photos
         public async Task<Result<bool>> DeleteProductAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id, p => p.Photos);
             if (product == null)
                 return Result<bool>.Failure("Product not found.", ErrorType.NotFound);
 
-            // ✅ حذف الصور من السيرفر
             foreach (var photo in product.Photos)
             {
                 _fileService.DeleteFile(photo.ImageName);
@@ -85,7 +87,6 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             return Result<bool>.Success(true);
         }
 
-        // ✅ Get Product By Id
         public async Task<Result<Product>> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id, p => p.Photos, p => p.Category);
@@ -95,7 +96,6 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             return Result<Product>.Success(product);
         }
 
-        // ✅ Get All Products
         public async Task<Result<List<Product>>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllAsync(p => p.Photos, p => p.Category);

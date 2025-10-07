@@ -3,6 +3,7 @@ using ECommerce.Application.Common;
 using ECommerce.Application.Features;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryByName;
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
+using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using MediatR;
@@ -33,6 +34,7 @@ namespace ECommerce.Application.PipelineBehaviors
             var sellerRequiredCommands = new[]
             {
                 typeof(CreateProductCommand),
+                typeof(EditProductCommand   ),
             };
 
             if (sellerRequiredCommands.Contains(typeof(TRequest)))

@@ -12,7 +12,7 @@ namespace ECommerce.Application.IServices.IProductServ
     public interface IProductService
     {
         Task<Result<Product>> CreateProductAsync(Product product, IFormFileCollection photos);
-        Task<Result<Product>> EditProductAsync(Product product);
+        Task<Result<Product>> EditProductAsync(int Id, Product updatedProduct);
         Task<Result<bool>> DeleteProductAsync(int id);
         Task<Result<Product>> GetProductByIdAsync(int id);
         Task<Result<List<Product>>> GetAllProductsAsync();
