@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.IServices;
+using ECommerce.Application.IServices.IProductServ;
 using ECommerce.Application.IServices.ProductServ;
 using ECommerce.Domain.IRepositories;
 using ECommerce.Domain.IRepositories.IOrderRepo;
@@ -29,6 +30,7 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService,ProductService>();
 
             // Repo
             services.AddScoped<ICategoryRepository, CategoryRepository>();

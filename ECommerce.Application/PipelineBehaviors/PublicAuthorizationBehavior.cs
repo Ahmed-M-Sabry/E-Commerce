@@ -34,26 +34,15 @@ namespace ECommerce.Application.PipelineBehaviors
                 typeof(ses),
             };
 
-            if (publicRequiredCommands.Contains(request.GetType()))
+            if (publicRequiredCommands.Contains(typeof(TRequest)))
             {
-                if (_httpContextAccessor.HttpContext == null)
-                    return CreateUnauthorizedResult<TResponse>("No user context available.");
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext == null)
+                    return CreateUnauthorizedResult<TResponse>("No HttpContext found.");
 
-                var userId = _httpContextAccessor.HttpContext.User?.FindFirst("uid")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return CreateUnauthorizedResult<TResponse>("You Must Be Login To See It");
-
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.GetUserAsync(httpContext.User);
                 if (user == null)
                     return CreateUnauthorizedResult<TResponse>("User not found.");
-
-                var hasAnyRole =
-                    await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin) ||
-                    await _userManager.IsInRoleAsync(user, ApplicationRoles.Seller) ||
-                    await _userManager.IsInRoleAsync(user, ApplicationRoles.Buyer);
-
-                if (!hasAnyRole)
-                    return CreateUnauthorizedResult<TResponse>("You must be logged in to perform this action.");
             }
 
             return await next();

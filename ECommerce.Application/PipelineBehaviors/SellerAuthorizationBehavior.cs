@@ -2,6 +2,7 @@
 using ECommerce.Application.Common;
 using ECommerce.Application.Features;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryByName;
+using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using MediatR;
@@ -31,21 +32,22 @@ namespace ECommerce.Application.PipelineBehaviors
         {
             var sellerRequiredCommands = new[]
             {
-                typeof(ses),
+                typeof(CreateProductCommand),
             };
 
-            if (sellerRequiredCommands.Contains(request.GetType()))
+            if (sellerRequiredCommands.Contains(typeof(TRequest)))
             {
-                if (_httpContextAccessor.HttpContext == null)
-                    return CreateUnauthorizedResult<TResponse>("No user context available.");
 
-                var userId = _httpContextAccessor.HttpContext.User?.FindFirst("uid")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return CreateUnauthorizedResult<TResponse>("You Must Be Seller To See It");
+                var userId = _httpContextAccessor.HttpContext.User?.FindFirst("uid")?.Value; 
+                if (string.IsNullOrEmpty(userId)) 
+                    return CreateUnauthorizedResult<TResponse>("You Must Login");
 
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                     return CreateUnauthorizedResult<TResponse>("User not found.");
+
+                if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
+                    return await next();
 
                 if (!await _userManager.IsInRoleAsync(user, ApplicationRoles.Seller))
                     return CreateUnauthorizedResult<TResponse>("You must be a Seller to perform this action.");

@@ -26,6 +26,6 @@ namespace ECommerce.Domain.Entities.Products
         [ForeignKey(nameof(SellerId)) , JsonIgnore]
         public ApplicationUser Seller { get; set; }
 
-        public double rating { get; set; }
+        public double rating { get; set; } = 0;
     }
 }

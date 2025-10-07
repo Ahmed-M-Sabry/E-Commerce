@@ -41,11 +41,14 @@ namespace ECommerce.Application.PipelineBehaviors
 
                 var userId = _httpContextAccessor.HttpContext.User?.FindFirst("uid")?.Value;
                 if (string.IsNullOrEmpty(userId))
-                    return CreateUnauthorizedResult<TResponse>("You Must Be Buyer To See It");
+                    return CreateUnauthorizedResult<TResponse>("You Must Login");
 
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                     return CreateUnauthorizedResult<TResponse>("User not found.");
+
+                if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
+                    return await next();
 
                 if (!await _userManager.IsInRoleAsync(user, ApplicationRoles.Buyer))
                     return CreateUnauthorizedResult<TResponse>("You must be a Buyer to perform this action.");

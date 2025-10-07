@@ -12,6 +12,8 @@ namespace ECommerce.Application.IServices
     {
         //Task<string> UploadFileAsync(IFormFile file, string targetFolder, string expectedType);
         Task<Result<string>> UploadFileAsync(IFormFile file, string targetFolder, string expectedType);
+        Task<Result<List<string>>> UploadMultipleFilesAsync(IFormFileCollection files, string targetFolder, string expectedType);
         Task<string> CalculateFileHashAsync(IFormFile file);
+        Result<bool> DeleteFile(string relativePath);
     }
 }

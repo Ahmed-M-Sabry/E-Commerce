@@ -21,14 +21,14 @@ namespace ECommerce.Application
         public static IServiceCollection AddApplicationDependencies(this IServiceCollection services)
         {
 
-            //services.AddMediatR(c => c.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AdminAuthorizationBehavior<,>));
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(SellerAuthorizationBehavior<,>));
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PublicAuthorizationBehavior<,>));
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AdminAuthorizationBehavior<,>));
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(SellerAuthorizationBehavior<,>));
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(BuyerAuthorizationBehavior<,>));
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PublicAuthorizationBehavior<,>));
+
             });
 
             services.AddAutoMapper(cfg =>
@@ -36,32 +36,13 @@ namespace ECommerce.Application
                 cfg.AddMaps(Assembly.GetExecutingAssembly());
             });
 
-            var assembly = Assembly.GetExecutingAssembly();
-
-            services.AddValidatorsFromAssembly(assembly);
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 
             services.AddScoped<IValidator<AddBuyerUserCommand>, AddBuyerUserValidator>();
             services.AddScoped<IValidator<AddSellerUserCommand>, AddSellerUserValidator>();
             services.AddScoped<IValidator<UserLogInCommand>, UserLogInValidator>();
             services.AddScoped<IValidator<ResetPasswordCommand>, ResetPasswordCommandValidator>();
-
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             return services;
         }

@@ -7,6 +7,7 @@ using ECommerce.Application.Features.CategoryFeatures.Commands.RestoreCategory;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetAllCategories;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryById;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryByName;
+using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
 using MediatR;
@@ -42,7 +43,9 @@ namespace ECommerce.Application.PipelineBehaviors
                 typeof(RestoreCategoryCommand),
                 typeof(EditCategoryCommand),
                 typeof(DeleteCategoryCommand),
-                typeof(CreateCategoryCommand)
+                typeof(CreateCategoryCommand),
+
+
             };
 
             if (adminRequiredCommands.Contains(request.GetType()))

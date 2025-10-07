@@ -16,7 +16,6 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerce.Infrastructure.Services
 {
@@ -283,6 +282,10 @@ public class IdentityServies : IIdentityServies
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
 
-        
+        public string? GetUserId()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst("uid")?.Value;
+        }
+
     }
 }

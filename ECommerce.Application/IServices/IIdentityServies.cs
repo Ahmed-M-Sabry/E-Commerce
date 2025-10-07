@@ -17,6 +17,7 @@ namespace ECommerce.Application.IServices
         Task<bool> IsInRole(string userId, string role);
         Task<ApplicationUser> IsUserExist(string userId);
         Task<ApplicationUser> GetUserByEmail(string email);
+        string? GetUserId();
 
         Task<ApplicationUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
         Task<bool> IsEmailExist(string email, CancellationToken cancellationToken = default);
@@ -29,6 +30,8 @@ namespace ECommerce.Application.IServices
         Task<IdentityResult> ConfirmEmailByTokenAsync(ApplicationUser user, string decodedToken, CancellationToken cancellationToken = default);
         Task<string> GetRestPasswordTokenAsync(ApplicationUser user, CancellationToken cancellationToken = default);
         Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
+
+
 
     }
 }
