@@ -101,7 +101,10 @@ namespace ECommerce.Infrastructure.Services.ProductServ
 
         public async Task<Result<List<Product>>> GetAllProductsAsync()
         {
-            var products = _productRepository.GetAllAsync(p => p.Photos, p => p.Category).ToList();
+            var products = await _productRepository
+                .GetAllAsync(p => p.Photos, p => p.Category)
+                .ToListAsync();
+
             return Result<List<Product>>.Success(products);
         }
 

@@ -2,6 +2,7 @@
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination;
+using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetProductById;
 using ECommerce.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,14 @@ namespace ECommerce.Application.Mappings
                 .ForMember(dest => dest.PhotosName,
                         opt => opt.MapFrom(src => src.Photos.Select(p => p.ImageName).ToList()))
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.rating))
+               .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate));
+
+            CreateMap<Product, GetProductByIdDto>()
+               .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.PhotosName,
+                        opt => opt.MapFrom(src => src.Photos.Select(p => p.ImageName).ToList()))
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.rating))
+                .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Seller.FullName))
                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate));
         }
     }

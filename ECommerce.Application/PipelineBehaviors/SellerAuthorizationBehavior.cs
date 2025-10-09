@@ -3,6 +3,7 @@ using ECommerce.Application.Common;
 using ECommerce.Application.Features;
 using ECommerce.Application.Features.CategoryFeatures.Queries.GetCategoryByName;
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
+using ECommerce.Application.Features.ProductFeatures.Commands.DeleteProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
 using ECommerce.Domain.AuthenticationHepler;
 using ECommerce.Domain.Entities;
@@ -34,7 +35,8 @@ namespace ECommerce.Application.PipelineBehaviors
             var sellerRequiredCommands = new[]
             {
                 typeof(CreateProductCommand),
-                typeof(EditProductCommand   ),
+                typeof(EditProductCommand),
+                typeof(DeleteProductCommand),
             };
 
             if (sellerRequiredCommands.Contains(typeof(TRequest)))

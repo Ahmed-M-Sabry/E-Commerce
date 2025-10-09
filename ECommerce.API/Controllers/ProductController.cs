@@ -3,6 +3,7 @@ using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.DeleteProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination;
+using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetProductById;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,12 @@ namespace ECommerce.API.Controllers
             var result = await Mediator.Send(query);
             return result.ResultStatusCode();
         }
-
+        [HttpGet("Get-Product-By-Id")]
+        public async Task<IActionResult> GetProductById([FromQuery] GetProductByIdQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return result.ResultStatusCode();
+        }
         [HttpPost("Create-Product")]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
         {
