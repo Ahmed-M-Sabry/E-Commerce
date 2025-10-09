@@ -92,7 +92,7 @@ namespace ECommerce.Infrastructure.Services.ProductServ
 
         public async Task<Result<Product>> GetProductByIdAsync(int id)
         {
-            var product = await _productRepository.GetByIdAsync(id, p => p.Photos, p => p.Category);
+            var product = await _productRepository.GetByIdAsync(id, p => p.Photos, p => p.Category , s=>s.Seller);
             if (product == null)
                 return Result<Product>.Failure("Product not found.", ErrorType.NotFound);
 

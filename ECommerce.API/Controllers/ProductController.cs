@@ -1,5 +1,6 @@
 ﻿using ECommerce.API.ApplicationBase;
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
+using ECommerce.Application.Features.ProductFeatures.Commands.DeleteProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +31,11 @@ namespace ECommerce.API.Controllers
             var result = await Mediator.Send(command);
             return result.ResultStatusCode();
         }
-
+        [HttpDelete("Delete-Product")]
+        public async Task<IActionResult> DeleteProduct([FromForm] DeleteProductCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ResultStatusCode();
+        }
     }
 }
