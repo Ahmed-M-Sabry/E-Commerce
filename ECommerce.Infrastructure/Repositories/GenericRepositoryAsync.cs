@@ -45,18 +45,19 @@ namespace ECommerce.Infrastructure.Repositories
             _dbSet.Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
+
         public async Task<IEnumerable<T>> GetAllAsync() 
         { 
             return _dbContext.Set<T>().AsNoTracking().AsQueryable().ToList();
         }
 
-        public virtual async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public virtual IQueryable<T> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet.AsNoTracking();
             foreach (var include in includes)
                 query = query.Include(include);
 
-            return await query.ToListAsync();
+            return query;
         }
 
         public virtual async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
@@ -72,5 +73,6 @@ namespace ECommerce.Infrastructure.Repositories
         {
             return await _dbSet.CountAsync();
         }
+
     }
 }

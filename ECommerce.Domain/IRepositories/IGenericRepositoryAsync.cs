@@ -11,7 +11,7 @@ namespace ECommerce.Domain.IRepositories
     public interface IGenericRepositoryAsync<T> where T : class
     {
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] Includes);
+        IQueryable<T> GetAllAsync(params Expression<Func<T, object>>[] Includes);
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
 

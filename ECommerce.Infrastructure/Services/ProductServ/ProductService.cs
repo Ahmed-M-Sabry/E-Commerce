@@ -1,10 +1,13 @@
-﻿using ECommerce.Application.Common;
+﻿using ECommerce.Application.Comman;
+using ECommerce.Application.Comman.Enum;
+using ECommerce.Application.Common;
 using ECommerce.Application.IServices;
 using ECommerce.Application.IServices.IProductServ;
 using ECommerce.Domain.Entities.Products;
 using ECommerce.Domain.IRepositories.ProductsRepo;
 using ECommerce.Infrastructure.Repositories.ProductsRepo;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,8 +101,54 @@ namespace ECommerce.Infrastructure.Services.ProductServ
 
         public async Task<Result<List<Product>>> GetAllProductsAsync()
         {
-            var products = await _productRepository.GetAllAsync(p => p.Photos, p => p.Category);
-            return Result<List<Product>>.Success(products.ToList());
+            var products = _productRepository.GetAllAsync(p => p.Photos, p => p.Category).ToList();
+            return Result<List<Product>>.Success(products);
         }
+
+        public async Task<Result<PagedResult<Product>>> GetAllProductsPaginationAsync(ProductParams productParams)
+        {
+            var query = _productRepository.GetAllAsync(p => p.Photos, p => p.Category);
+
+            if (!string.IsNullOrWhiteSpace(productParams.Search))
+            {
+                var search = $"%{productParams.Search}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name, search) ||
+                    EF.Functions.Like(p.Description, search));
+            }
+
+            if (productParams.CategoryId.HasValue)
+                query = query.Where(p => p.CategoryId == productParams.CategoryId.Value);
+
+            query = productParams.SortOption switch
+            {
+                ProductSortOption.PriceAsc => query.OrderBy(p => p.NewPrice),
+                ProductSortOption.PriceDesc => query.OrderByDescending(p => p.NewPrice),
+                ProductSortOption.NameDesc => query.OrderByDescending(p => p.Name),
+                ProductSortOption.DateAddedDesc => query.OrderByDescending(p => p.CreatedDate),
+                _ => query.OrderBy(p => p.Name)
+            };
+
+            var totalCount = await query.CountAsync();
+
+            var products = await query
+                .Skip((productParams.PageNumber - 1) * productParams.PageSize)
+                .Take(productParams.PageSize)
+                .ToListAsync();
+
+            if (!products.Any())
+                return Result<PagedResult<Product>>.Failure("No Product Found", ErrorType.NotFound);
+
+            var result = new PagedResult<Product>
+            {
+                Data = products,
+                TotalCount = totalCount,
+                PageNumber = productParams.PageNumber,
+                PageSize = productParams.PageSize
+            };
+
+            return Result<PagedResult<Product>>.Success(result);
+        }
+
     }
 }

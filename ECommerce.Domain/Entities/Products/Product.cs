@@ -27,5 +27,6 @@ namespace ECommerce.Domain.Entities.Products
         public ApplicationUser Seller { get; set; }
 
         public double rating { get; set; } = 0;
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

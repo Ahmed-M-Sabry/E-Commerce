@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
+using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination;
 using ECommerce.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,13 @@ namespace ECommerce.Application.Mappings
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Photos, opt => opt.Ignore())
                 .ForMember(dest => dest.SellerId, opt => opt.Ignore());
+
+            CreateMap<Product, GetAllProductByPaginationDto>()
+               .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.PhotosName,
+                        opt => opt.MapFrom(src => src.Photos.Select(p => p.ImageName).ToList()))
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.rating))
+               .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate));
         }
     }
 }

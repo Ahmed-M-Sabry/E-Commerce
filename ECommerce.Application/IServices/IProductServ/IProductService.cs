@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Common;
+﻿using ECommerce.Application.Comman;
+using ECommerce.Application.Common;
 using ECommerce.Domain.Entities.Products;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,5 +17,6 @@ namespace ECommerce.Application.IServices.IProductServ
         Task<Result<bool>> DeleteProductAsync(int id);
         Task<Result<Product>> GetProductByIdAsync(int id);
         Task<Result<List<Product>>> GetAllProductsAsync();
+        Task<Result<PagedResult<Product>>> GetAllProductsPaginationAsync(ProductParams productParams);
     }
 }
