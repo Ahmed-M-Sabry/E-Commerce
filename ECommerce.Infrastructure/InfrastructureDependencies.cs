@@ -31,6 +31,7 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService,ProductService>();
+            services.AddScoped<IProductPhotoService, ProductPhotoService>();
 
             // Repo
             services.AddScoped<ICategoryRepository, CategoryRepository>();

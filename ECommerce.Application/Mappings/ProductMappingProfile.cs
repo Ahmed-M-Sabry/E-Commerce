@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using ECommerce.Application.Features.ProductFeatures.Commands.CreateProduct;
 using ECommerce.Application.Features.ProductFeatures.Commands.EditProduct;
-using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination;
-using ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetProductById;
+using ECommerce.Application.Features.ProductFeatures.Queries.GetAllProductByPagination;
+using ECommerce.Application.Features.ProductFeatures.Queries.GetProductById;
 using ECommerce.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;

@@ -4,7 +4,7 @@ using ECommerce.Application.Common;
 using ECommerce.Application.IServices.IProductServ;
 using MediatR;
 
-namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination
+namespace ECommerce.Application.Features.ProductFeatures.Queries.GetAllProductByPagination
 {
     public class GetAllProductByPaginationHandler
         : IRequestHandler<GetAllProductByPaginationQuery, Result<PagedResult<GetAllProductByPaginationDto>>>

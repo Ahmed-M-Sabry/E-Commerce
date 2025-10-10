@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetProductById
+namespace ECommerce.Application.Features.ProductFeatures.Queries.GetProductById
 {
     public class GetProductByIdHandler : IRequestHandler<GetProductByIdQuery, Result<GetProductByIdDto>>
     {

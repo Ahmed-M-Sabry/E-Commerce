@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination
+namespace ECommerce.Application.Features.ProductFeatures.Queries.GetAllProductByPagination
 {
     public class GetAllProductByPaginationQuery : IRequest<Result<PagedResult<GetAllProductByPaginationDto>>>
     {

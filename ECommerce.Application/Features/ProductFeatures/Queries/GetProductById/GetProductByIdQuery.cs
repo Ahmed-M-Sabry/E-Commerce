@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetProductById
+namespace ECommerce.Application.Features.ProductFeatures.Queries.GetProductById
 {
     public class GetProductByIdQuery : IRequest<Result<GetProductByIdDto>>
     {

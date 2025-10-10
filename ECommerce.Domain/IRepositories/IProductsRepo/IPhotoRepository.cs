@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Domain.IRepositories.ProductsRepo
 {
-    public interface IPhotoRepository : IGenericRepositoryAsync<Photo>
+    public interface IPhotoRepository : IGenericRepositoryAsync<ProductPhoto>
     {
+        Task<IEnumerable<ProductPhoto>> GetAllByProductIdAsync(int productId);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Domain.Entities.Products
 {
-    public class Photo
+    public class ProductPhoto
     {
         public int Id { get; set; }
         public string ImageName { get; set; }

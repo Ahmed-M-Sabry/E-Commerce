@@ -48,7 +48,7 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             if (!uploadResult.IsSuccess)
                 return Result<Product>.Failure(uploadResult.Message, ErrorType.BadRequest);
 
-            product.Photos = uploadResult.Value.Select(path => new Photo { ImageName = path }).ToList();
+            product.Photos = uploadResult.Value.Select(path => new ProductPhoto { ImageName = path }).ToList();
 
             var added = await _productRepository.AddAsync(product);
             return Result<Product>.Success(added);

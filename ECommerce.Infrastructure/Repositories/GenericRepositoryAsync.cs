@@ -46,10 +46,13 @@ namespace ECommerce.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync() 
-        { 
-            return _dbContext.Set<T>().AsNoTracking().AsQueryable().ToList();
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbContext.Set<T>()
+                .AsNoTracking()
+                .ToListAsync();
         }
+
 
         public virtual IQueryable<T> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {

@@ -1,15 +1,12 @@
-﻿using ECommerce.Domain.Entities;
-using ECommerce.Domain.Entities.Products;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAllProductByPagination
+namespace ECommerce.Application.Features.ProductFeatures.Queries.GetProductById
 {
-    public class GetAllProductByPaginationDto
+    public class GetProductByIdDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -19,7 +16,7 @@ namespace ECommerce.Application.Features.ProductFeatures.Commands.Queries.GetAll
         public virtual List<string> PhotosName { get; set; }
         public string CategoryName { get; set; }
         public double Rating { get; set; }
+        public string SellerName { get; set; }
         public DateTime CreatedDate { get; set; }
     }
-
 }
