@@ -82,7 +82,7 @@ namespace ECommerce.API.Middleware
 
             if (now - timestamp < _rateLimitWindow)
             {
-                if (count >= 10)
+                if (count >= 80)
                     return false;
 
                 _memoryCache.Set(cacheKey, (timestamp, count + 1), _rateLimitWindow);

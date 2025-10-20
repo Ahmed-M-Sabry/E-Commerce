@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.IRepositories.IOrderRepo;
-using ECommerce.Domain.IRepositories.ProductsRepo;
+﻿using ECommerce.Domain.IRepositories.ProductsRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;

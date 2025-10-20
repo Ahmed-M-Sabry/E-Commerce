@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Application.Comman;
+using ECommerce.Application.Comman.ProductParam;
 using ECommerce.Application.Common;
 using ECommerce.Application.IServices.IProductServ;
 using MediatR;

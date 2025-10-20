@@ -1,18 +1,15 @@
 ﻿using ECommerce.Application.Comman;
 using ECommerce.Application.Comman.Enum;
+using ECommerce.Application.Comman.ProductParam;
 using ECommerce.Application.Common;
 using ECommerce.Application.IServices;
 using ECommerce.Application.IServices.IProductServ;
 using ECommerce.Domain.Entities.Products;
 using ECommerce.Domain.IRepositories.ProductsRepo;
-using ECommerce.Infrastructure.Repositories.ProductsRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace ECommerce.Infrastructure.Services.ProductServ
 {
@@ -96,6 +93,8 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             if (product == null)
                 return Result<Product>.Failure("Product not found.", ErrorType.NotFound);
 
+            EnsureDefaultPhoto(product);
+
             return Result<Product>.Success(product);
         }
 
@@ -106,6 +105,30 @@ namespace ECommerce.Infrastructure.Services.ProductServ
                 .ToListAsync();
 
             return Result<List<Product>>.Success(products);
+        }
+
+        
+        public async Task<Result<KeysetPagination<Product>>> GetAllProductsKeysetPaginationAsync(int? lastId , int pageSize = 20)
+        {
+            var query = _productRepository.GetAllAsync(p => p.Photos, p => p.Category);
+
+            if (lastId.HasValue)
+                query = query.Where(p => p.Id > lastId.Value);
+
+            var items = await query.Take(pageSize + 1).ToListAsync();
+
+            bool hasMore = items.Count > pageSize;
+            var data = items.Take(pageSize).ToList();
+            var nextLastId = hasMore ? data.Last().Id : (int?)null;
+
+            var result = new KeysetPagination<Product>
+            {
+                Data = items,
+                HasMore = hasMore,
+                LastIndex = nextLastId
+            };
+
+            return Result<KeysetPagination<Product>>.Success(result);
         }
 
         public async Task<Result<PagedResult<Product>>> GetAllProductsPaginationAsync(ProductParams productParams)
@@ -142,6 +165,10 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             if (!products.Any())
                 return Result<PagedResult<Product>>.Failure("No Product Found", ErrorType.NotFound);
 
+            foreach (var product in products)
+            {
+                EnsureDefaultPhoto(product);
+            }
             var result = new PagedResult<Product>
             {
                 Data = products,
@@ -152,6 +179,130 @@ namespace ECommerce.Infrastructure.Services.ProductServ
 
             return Result<PagedResult<Product>>.Success(result);
         }
+
+        public async Task<Result<KeysetPagination<Product>>> GetAllProductsKeysetPaginationAsync(
+            string? cursor = null,                 
+            int pageSize = 20,
+            string? search = null,
+            int? categoryId = null,
+            string sortBy = "Id",                   
+            bool isDescending = false)              
+        {
+            var query = _productRepository.GetAllAsync(p => p.Photos, p => p.Category);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var pattern = $"%{search}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name, pattern) ||
+                    EF.Functions.Like(p.Description, pattern));
+
+                if(query.ToListAsync() == null )
+                    return Result<KeysetPagination<Product>>.Failure("Not found any Product With This Name",ErrorType.NotFound);
+            }
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            query = sortBy.ToLower() switch
+            {
+                "price" => isDescending
+                    ? query.OrderByDescending(p => p.NewPrice)
+                    : query.OrderBy(p => p.NewPrice),
+
+                "date" => isDescending
+                    ? query.OrderByDescending(p => p.CreatedDate)
+                    : query.OrderBy(p => p.CreatedDate),
+
+                "name" => isDescending
+                    ? query.OrderByDescending(p => p.Name)
+                    : query.OrderBy(p => p.Name),
+
+                _ => isDescending
+                    ? query.OrderByDescending(p => p.Id)
+                    : query.OrderBy(p => p.Id)
+            };
+
+            if (!string.IsNullOrEmpty(cursor))
+            {
+                switch (sortBy.ToLower())
+                {
+                    case "price":
+                        if (decimal.TryParse(cursor, out var priceCursor))
+                            query = isDescending
+                                ? query.Where(p => p.NewPrice < priceCursor)
+                                : query.Where(p => p.NewPrice > priceCursor);
+                        break;
+
+                    case "date":
+                        if (DateTime.TryParse(cursor, out var dateCursor))
+                            query = isDescending
+                                ? query.Where(p => p.CreatedDate < dateCursor)
+                                : query.Where(p => p.CreatedDate > dateCursor);
+                        break;
+
+                    case "name":
+                        query = isDescending
+                            ? query.Where(p => string.Compare(p.Name, cursor) < 0)
+                            : query.Where(p => string.Compare(p.Name, cursor) > 0);
+                        break;
+
+                    default:
+                        if (int.TryParse(cursor, out var idCursor))
+                            query = isDescending
+                                ? query.Where(p => p.Id < idCursor)
+                                : query.Where(p => p.Id > idCursor);
+                        break;
+                }
+            }
+
+            var items = await query.Take(pageSize + 1).ToListAsync();
+
+            bool hasMore = items.Count > pageSize;
+            var data = items.Take(pageSize).ToList();
+
+            string? nextCursor = null;
+            if (hasMore)
+            {
+                var lastItem = data.Last();
+
+                nextCursor = sortBy.ToLower() switch
+                {
+                    "price" => lastItem.NewPrice.ToString(),
+                    "date" => lastItem.CreatedDate.ToString("O"),
+                    "name" => lastItem.Name,
+                    _ => lastItem.Id.ToString()
+                };
+            }
+            foreach (var product in data)
+            {
+                EnsureDefaultPhoto(product);
+            }
+            var result = new KeysetPagination<Product>
+            {
+                Data = data,
+                HasMore = hasMore,
+                LastCursor = nextCursor
+            };
+
+            return Result<KeysetPagination<Product>>.Success(result);
+        }
+        private void EnsureDefaultPhoto(Product product)
+        {
+            if (product.Photos == null || !product.Photos.Any())
+            {
+                product.Photos = new List<ProductPhoto>
+        {
+            new ProductPhoto
+            {
+                Id = 0,
+                ProductId = product.Id,
+                ImageName = "/Uploads/Defaults/defaultphoto.png"
+            }
+        };
+            }
+        }
+
 
     }
 }

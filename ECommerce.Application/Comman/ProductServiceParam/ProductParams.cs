@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Comman
+namespace ECommerce.Application.Comman.ProductParam
 {
     public class ProductParams
     {

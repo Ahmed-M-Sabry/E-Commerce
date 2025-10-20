@@ -2,6 +2,7 @@
 using ECommerce.Application;
 using ECommerce.Domain;
 using ECommerce.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +20,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials(); 
+            .AllowCredentials()
+            .WithOrigins("http://localhost:4200");
     });
 });
 // Add custom dependencies
@@ -64,7 +65,6 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 
-app.UseCors("AllowFrontend");
 
 //app.Use(async (context, next) =>
 //{
@@ -90,8 +90,17 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
-//app.UseStatusCodePagesWithReExecute("/errors/{0}");
+app.UseCors("AllowFrontend");
+
 app.UseMiddleware<ExceptionsMiddleware>();
+
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+    RequestPath = ""
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication(); 

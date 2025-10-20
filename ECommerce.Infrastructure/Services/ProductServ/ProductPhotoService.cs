@@ -104,13 +104,32 @@ namespace ECommerce.Infrastructure.Services.ProductServ
             return Result<bool>.Success(true, "All product photos deleted successfully.");
         }
 
+        //public async Task<Result<IEnumerable<ProductPhoto>>> GetPhotosByProductIdAsync(int productId)
+        //{
+        //    var photos = await _photoRepository.GetAllByProductIdAsync(productId);
+        //    if (!photos.Any())
+        //        return Result<IEnumerable<ProductPhoto>>.Failure("No photos found for this product.", ErrorType.NotFound);
+
+        //    return Result<IEnumerable<ProductPhoto>>.Success(photos);
+        //}
         public async Task<Result<IEnumerable<ProductPhoto>>> GetPhotosByProductIdAsync(int productId)
         {
             var photos = await _photoRepository.GetAllByProductIdAsync(productId);
-            if (!photos.Any())
-                return Result<IEnumerable<ProductPhoto>>.Failure("No photos found for this product.", ErrorType.NotFound);
+
+            if (photos == null || !photos.Any())
+            {
+                var defaultPhoto = new ProductPhoto
+                {
+                    Id = 0,
+                    ProductId = productId,
+                    ImageName = "/Uploads/Defaults/defaultphoto.png"
+                };
+
+                return Result<IEnumerable<ProductPhoto>>.Success(new List<ProductPhoto> { defaultPhoto });
+            }
 
             return Result<IEnumerable<ProductPhoto>>.Success(photos);
         }
+
     }
 }
