@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Features.BasketFeatures.Queries
+namespace ECommerce.Application.Features.BasketFeatures.Queries.GetBasketById
 {
     public class GetBasketQuery : IRequest<Result<CustomerBasket>>
     {

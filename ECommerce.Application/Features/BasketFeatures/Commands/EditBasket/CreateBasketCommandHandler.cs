@@ -21,6 +21,9 @@ namespace ECommerce.Application.Features.BasketFeatures.Commands.EditBasket
 
         public async Task<Result<CustomerBasket>> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.Id))
+                return Result<CustomerBasket>.Failure("Basket ID is required.", ErrorType.BadRequest);
+
             var basket = new CustomerBasket
             {
                 Id = request.Id,

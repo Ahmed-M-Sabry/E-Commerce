@@ -21,7 +21,6 @@ namespace ECommerce.Domain.Entities
 
         public string PaymentIntentId { get; set; }
         public string ClientSecret { get; set; }
-        [JsonIgnore]
         public List<BasketItem> basketItems { get; set; } = new List<BasketItem>(); //value
     }
 }

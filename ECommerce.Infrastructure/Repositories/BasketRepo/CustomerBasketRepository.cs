@@ -34,12 +34,69 @@ namespace ECommerce.Infrastructure.Repositories.BasketRepo
 
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
         {
-            var _basket = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
-            if (_basket)
+            if (basket == null || string.IsNullOrWhiteSpace(basket.Id))
+                return null;
+
+            var existingBasket = await GetBasketAsync(basket.Id);
+            if (existingBasket != null)
             {
-                return await GetBasketAsync(basket.Id);
+                existingBasket.basketItems = basket.basketItems;
+                basket = existingBasket;
             }
+
+            var result = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
+            if (result)
+                return await GetBasketAsync(basket.Id);
+
             return null;
         }
+        //public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
+        //{
+        //    var existingBasket = await GetBasketAsync(basket.Id);
+        //    if (existingBasket != null)
+        //    {
+        //        foreach (var newItem in basket.basketItems)
+        //        {
+        //            var oldItem = existingBasket.basketItems.FirstOrDefault(x => x.Id == newItem.Id);
+        //            if (oldItem != null)
+        //            {
+        //                //oldItem.Quantity += newItem.Quantity;
+        //                oldItem.Quantity = newItem.Quantity;
+        //            }
+        //            else
+        //            {
+        //                existingBasket.basketItems.Add(newItem);
+        //            }
+        //        }
+        //        basket.basketItems = existingBasket.basketItems;
+        //    }
+
+        //    var result = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
+        //    if (result)
+        //        return await GetBasketAsync(basket.Id);
+
+        //    return null;
+        //}
+
     }
 }
+    //public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
+    //{
+    //    var _basket = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
+    //    if (_basket)
+    //    {
+    //        return await GetBasketAsync(basket.Id);
+    //    }
+    //    return null;
+    //}
+
+    //public async Task<CustomerBasket> RemoveItemAsync(string basketId, int itemId)
+    //    {
+    //        var basket = await GetBasketAsync(basketId);
+    //        if (basket == null) return null;
+
+    //        basket.basketItems = basket.basketItems.Where(i => i.Id != itemId).ToList();
+
+    //        var result = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
+    //        return result ? basket : null;
+    //    }
