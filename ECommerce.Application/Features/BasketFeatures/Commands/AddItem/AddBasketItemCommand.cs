@@ -12,7 +12,7 @@ namespace ECommerce.Application.Features.BasketFeatures.Commands.AddItem
     public class AddBasketItemCommand : IRequest<Result<CustomerBasket>>
     {
         public string BasketId { get; set; } = string.Empty;
-        public BasketItem Item { get; set; }
+        public int ItemId { get; set; }
     }
 }
 

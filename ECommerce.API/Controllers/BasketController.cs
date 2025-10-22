@@ -5,10 +5,8 @@ using ECommerce.Application.Features.BasketFeatures.Commands.DeleteBasket;
 using ECommerce.Application.Features.BasketFeatures.Commands.EditBasket;
 using ECommerce.Application.Features.BasketFeatures.Commands.IncrementItemQuantity;
 using ECommerce.Application.Features.BasketFeatures.Commands.RemoveItem;
-using ECommerce.Application.Features.BasketFeatures.Queries;
 using ECommerce.Application.Features.BasketFeatures.Queries.GetBasketById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -17,7 +15,6 @@ namespace ECommerce.API.Controllers
     [Route("api/[controller]")]
     public class BasketController : ApplicationControllerBase
     {
-
         [HttpGet("Get-Basket")]
         public async Task<IActionResult> GetBasket([FromQuery] string id)
         {
@@ -67,5 +64,4 @@ namespace ECommerce.API.Controllers
             return result.ResultStatusCode();
         }
     }
-
 }

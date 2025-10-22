@@ -15,6 +15,7 @@ namespace ECommerce.Domain.Entities.Products
         public string Description { get; set; }
         public decimal NewPrice { get; set; }
         public decimal OldPrice { get; set; }
+        public int StockQuantity { get; set; }
 
         public virtual List<ProductPhoto> Photos { get; set; }
         public int CategoryId { get; set; }
@@ -26,7 +27,10 @@ namespace ECommerce.Domain.Entities.Products
         [ForeignKey(nameof(SellerId)) , JsonIgnore]
         public ApplicationUser Seller { get; set; }
 
-        public double rating { get; set; } = 0;
+        [NotMapped]
+        public double rating => Ratings?.Count > 0 ? Ratings.Average(r => r.Stars) : 0;
+
+        public virtual List<Rating> Ratings { get; set; } = new();
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

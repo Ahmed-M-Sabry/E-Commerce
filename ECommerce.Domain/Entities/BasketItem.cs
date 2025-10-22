@@ -8,12 +8,12 @@ namespace ECommerce.Domain.Entities
 {
     public class BasketItem
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Image { get; set; }
-        public int Quantity { get; set; } = 1;
-        public decimal Price { get; set; }
-        public string Category { get; set; }
+        public int Id { get; set; } 
+        public string name { get; set; }
+        public string description { get; set; }
+        public string image { get; set; }
+        public int quantity { get; set; } = 1;
+        public decimal price { get; set; }
+        public string category { get; set; }
     }
 }

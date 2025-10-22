@@ -30,12 +30,14 @@ namespace ECommerce.Application.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.PhotosName, opt => opt.MapFrom(src => src.Photos))
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.rating))
+                .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.StockQuantity))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate));
 
             CreateMap<Product, GetProductByIdDto>()
                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.PhotosName, opt => opt.MapFrom(src => src.Photos))
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.rating))
+                .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.StockQuantity))
                 .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Seller.FullName))
                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate));
         }

@@ -37,6 +37,12 @@ namespace ECommerce.Infrastructure.Services.Basket
                 if (basket == null || string.IsNullOrWhiteSpace(basket.Id))
                     return Result<CustomerBasket>.Failure("Invalid basket data.", ErrorType.BadRequest);
 
+                foreach (var item in basket.basketItems)
+                {
+                    if (item.quantity <= 0)
+                        return Result<CustomerBasket>.Failure($"Item {item.Id} has invalid quantity.", ErrorType.BadRequest);
+                }
+
                 var updatedBasket = await _basketRepository.UpdateBasketAsync(basket);
                 if (updatedBasket == null)
                     return Result<CustomerBasket>.Failure("Failed to update basket.", ErrorType.InternalServerError);
